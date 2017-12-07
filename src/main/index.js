@@ -1,6 +1,9 @@
 'use strict'
 
 import { app, BrowserWindow } from 'electron'
+let storage = requrie('electron-json-storage')
+let axios = require('axios')
+let log = require('electron-log')
 
 /**
  * Set `__static` path to static files in production
@@ -11,6 +14,9 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
+let token
+let domain
+
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -30,6 +36,13 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  storage.getMany(['token', 'domain'], (error, data) => {
+    if (!error) {
+      token = data.token
+      domain = data.domain
+    }
+  })
 }
 
 app.on('ready', createWindow)
@@ -44,6 +57,26 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+app.on('getrepositories', (event, options) => {
+  console.log('>> Main')
+  console.log(options)
+  let limit = options.limit || 50
+  let page = options.page || 1
+  let response
+  axios.get('https://' + domain + '.deploybot.com/api/v1/repositories', {
+    headers: {'X-Api-Token': token},
+    params: {
+      limit: limit,
+      page: page
+    }
+  }).then(response => {
+    response = response.data
+  }).catch(error => {
+    response = error
+  })
+  event.sender.send('getrepositories-response', response)
 })
 
 /**

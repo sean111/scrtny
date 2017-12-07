@@ -6,6 +6,13 @@
 
 <script>
     export default {
-      name: 'dashboard'
+      name: 'dashboard',
+      created () {
+        console.log('Hello World!')
+        this.$electron.ipcRenderer.send('getrepositories')
+        this.$electron.ipcRenderer.on('getrepositories-response', (event, data) => {
+          console.log(data)
+        })
+      }
     }
 </script>
