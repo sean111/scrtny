@@ -1,9 +1,9 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
-let storage = requrie('electron-json-storage')
+import { app, BrowserWindow, ipcMain } from 'electron'
+let storage = require('electron-json-storage')
 let axios = require('axios')
-let log = require('electron-log')
+// let log = require('electron-log')
 
 /**
  * Set `__static` path to static files in production
@@ -59,11 +59,15 @@ app.on('activate', () => {
   }
 })
 
-app.on('getrepositories', (event, options) => {
+ipcMain.on('getrepositories', (event, options) => {
   console.log('>> Main')
   console.log(options)
-  let limit = options.limit || 50
-  let page = options.page || 1
+  let limit = 50
+  let page = 1
+  if (options !== undefined) {
+    limit = options.limit || limit
+    page = options.page || page
+  }
   let response
   axios.get('https://' + domain + '.deploybot.com/api/v1/repositories', {
     headers: {'X-Api-Token': token},
@@ -72,6 +76,7 @@ app.on('getrepositories', (event, options) => {
       page: page
     }
   }).then(response => {
+    console.log(response)
     response = response.data
   }).catch(error => {
     response = error
