@@ -1,6 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow, ipcMain } from 'electron'
+// import moment from 'moment'
 let storage = require('electron-json-storage')
 let axios = require('axios')
 // let log = require('electron-log')
@@ -59,7 +60,10 @@ app.on('activate', () => {
   }
 })
 
-ipcMain.on('getrepositories', (event, options) => {
+ipcMain.on('get-repositories', (event, options) => {
+  if (token === undefined || domain === undefined) {
+    event.sender.send('get-repositories-response', {})
+  }
   console.log('>> Main')
   console.log(options)
   let limit = 50
@@ -68,7 +72,6 @@ ipcMain.on('getrepositories', (event, options) => {
     limit = options.limit || limit
     page = options.page || page
   }
-  let response
   axios.get(`https://${domain}.deploybot.com/api/v1/repositories`, {
     headers: {'X-Api-Token': token},
     params: {
@@ -76,18 +79,21 @@ ipcMain.on('getrepositories', (event, options) => {
       page: page
     }
   }).then(response => {
-    console.log(response)
-    response = response.data
+    event.sender.send('get-repositories-response', response.data)
   }).catch(error => {
-    response = error
+    event.sender.send('get-repositories-error', error)
   })
-  event.sender.send('getrepositories-response', response)
 })
 
 ipcMain.on('set-config', (event, data) => {
   storage.set('token', data.token)
   storage.set('domain', data.domain)
 })
+
+ipcMain.on('get-config', (event, data) => {
+  event.sender.send('get-config-response', {'token': token, 'domain': domain})
+})
+
 /**
  * Auto Updater
  *
