@@ -7,8 +7,10 @@
 <script>
     export default {
       name: 'dashboard',
+      data: {
+        repositories: null
+      },
       mounted () {
-        console.log('Hello World!')
         this.$electron.ipcRenderer.send('getrepositories')
         this.$electron.ipcRenderer.on('getrepositories-response', (event, data) => {
           console.log(data)

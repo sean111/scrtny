@@ -69,7 +69,7 @@ ipcMain.on('getrepositories', (event, options) => {
     page = options.page || page
   }
   let response
-  axios.get('https://' + domain + '.deploybot.com/api/v1/repositories', {
+  axios.get(`https://${domain}.deploybot.com/api/v1/repositories`, {
     headers: {'X-Api-Token': token},
     params: {
       limit: limit,
@@ -84,6 +84,10 @@ ipcMain.on('getrepositories', (event, options) => {
   event.sender.send('getrepositories-response', response)
 })
 
+ipcMain.on('set-config', (event, data) => {
+  storage.set('token', data.token)
+  storage.set('domain', data.domain)
+})
 /**
  * Auto Updater
  *
