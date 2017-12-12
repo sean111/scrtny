@@ -16,6 +16,12 @@ export default new Router({
       component: require('@/components/Config').default
     },
     {
+      path: '/repository/:id',
+      name: 'repository',
+      component: require('@/components/Repository').default,
+      props: true
+    },
+    {
       path: '*',
       redirect: '/'
     }

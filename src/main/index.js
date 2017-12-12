@@ -1,9 +1,12 @@
 'use strict'
 
 import { app, BrowserWindow, ipcMain } from 'electron'
+import _ from 'underscore'
 // import moment from 'moment'
 let storage = require('electron-json-storage')
 let axios = require('axios')
+
+global._ = _
 // let log = require('electron-log')
 
 /**
@@ -87,13 +90,30 @@ ipcMain.on('get-repositories', (event, options) => {
 
 ipcMain.on('set-config', (event, data) => {
   storage.set('token', data.token)
+  token = data.token
   storage.set('domain', data.domain)
+  domain = data.domain
 })
 
 ipcMain.on('get-config', (event, data) => {
   event.sender.send('get-config-response', {'token': token, 'domain': domain})
 })
 
+ipcMain.on('get-deployments', (event, data) => {
+  let url = `https://${domain}.deploybot.com/api/v1/deployments`
+  let params = {}
+  if (data.repository_id) {
+    params.repository_id = data.repository_id
+  }
+  axios.get(url, {
+    headers: {'X-Api-Token': token},
+    params: params
+  }).then(response => {
+    event.sender.send('get-deployments-response', response.data)
+  }).catch(error => {
+    event.sender.send('get-deployments-error', error)
+  })
+})
 /**
  * Auto Updater
  *

@@ -16,6 +16,7 @@ Vue.use(BootstrapVue)
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
+Vue.moment =
 
 Vue.filter('formatDate', function (value) {
   if (!value) return null
