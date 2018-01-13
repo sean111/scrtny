@@ -28,11 +28,24 @@
     },
     watch: {
       'id': function (event) {
+        this.data = null
+        this.$Progress.start()
         this.$electron.ipcRenderer.send('get-deployments', {'repository_id': this.id})
-        this.$electron.ipcRenderer.on('get-deployments-response', (event, data) => {
-          this.deployments = data.entries
-        })
+        // this.$electron.ipcRenderer.on('get-deployments-response', (event, data) => {
+        //   this.deployments = data.entries
+        //   this.$Progress.start()
+        // })
       }
+    },
+    mounted () {
+      this.$Progress.start()
+      this.$electron.ipcRenderer.send('get-deployments', {'repository_id': this.id})
+    },
+    created () {
+      this.$electron.ipcRenderer.on('get-deployments-response', (event, data) => {
+        this.deployments = data.entries
+        this.$Progress.finish()
+      })
     },
     methods: {
       header: function (deployment) {

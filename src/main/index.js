@@ -7,7 +7,6 @@ let storage = require('electron-json-storage')
 let axios = require('axios')
 
 global._ = _
-// let log = require('electron-log')
 
 /**
  * Set `__static` path to static files in production
