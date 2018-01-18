@@ -38,10 +38,14 @@
       }
     },
     mounted () {
-      this.$Progress.start()
+      // this.$Progress.start()
       this.$electron.ipcRenderer.send('get-deployments', {'repository_id': this.id})
     },
     created () {
+      this.$electron.ipcRenderer.on('progress-start', () => {
+        console.log('progress start')
+        this.$Progress.start()
+      })
       this.$electron.ipcRenderer.on('get-deployments-response', (event, data) => {
         this.deployments = data.entries
         this.$Progress.finish()
@@ -59,6 +63,14 @@
           return 'danger'
         }
       }
+    },
+    beforeRouteUpdate (to, from, next) {
+      this.$electron.ipcRenderer.send('clear-timeout')
+      next()
+    },
+    beforeRouteLeave (to, from, next) {
+      this.$electron.ipcRenderer.send('clear-timeout')
+      next()
     }
   }
 </script>

@@ -19,6 +19,8 @@ if (process.env.NODE_ENV !== 'development') {
 let mainWindow
 let token
 let domain
+let refreshTime
+let refreshTimer = null
 
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
@@ -40,10 +42,11 @@ function createWindow () {
     mainWindow = null
   })
 
-  storage.getMany(['token', 'domain'], (error, data) => {
+  storage.getMany(['token', 'domain', 'refreshTime'], (error, data) => {
     if (!error) {
       token = data.token
       domain = data.domain
+      refreshTime = data.refreshTime
     }
   })
 }
@@ -92,13 +95,31 @@ ipcMain.on('set-config', (event, data) => {
   token = data.token
   storage.set('domain', data.domain)
   domain = data.domain
+  storage.set('refreshTime', data.refreshTime)
+  refreshTime = data.refreshTime
 })
 
 ipcMain.on('get-config', (event, data) => {
-  event.sender.send('get-config-response', {'token': token, 'domain': domain})
+  event.sender.send('get-config-response', {'token': token, 'domain': domain, 'refreshTime': refreshTime})
 })
 
 ipcMain.on('get-deployments', (event, data) => {
+  getDeployments(event, data)
+})
+
+ipcMain.on('clear-timeout', (event) => {
+  if (refreshTimer === null) {
+    clearTimeout(refreshTimer)
+    refreshTimer = null
+  }
+})
+
+function startProgress (event) {
+  event.sender.send('progress-start')
+}
+
+function getDeployments (event, data) {
+  startProgress(event)
   let url = `https://${domain}.deploybot.com/api/v1/deployments`
   let params = {}
   if (data.repository_id) {
@@ -112,7 +133,8 @@ ipcMain.on('get-deployments', (event, data) => {
   }).catch(error => {
     event.sender.send('get-deployments-error', error)
   })
-})
+  refreshTimer = setTimeout(getDeployments, refreshTime * 1000, event, data)
+}
 /**
  * Auto Updater
  *
