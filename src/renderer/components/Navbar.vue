@@ -1,6 +1,6 @@
 <template>
   <b-navbar toggleable="md" type="dark" variant="dark">
-    <b-navbar-brand href="#">DeployBot</b-navbar-brand>
+    <b-navbar-brand href="#">Scrtny</b-navbar-brand>
     <b-navbar-nav>
       <b-nav-item-dropdown text="Repositories">
         <router-link v-for="repository in repositories" class="dropdown-item" :to="{ name: 'repository', params: {id: repository.id}}" :key="repository.id">{{ repository.title }}</router-link>

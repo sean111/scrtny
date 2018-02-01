@@ -9,7 +9,7 @@
 <script>
   import Navbar from './components/Navbar'
   export default {
-    name: 'dbot-client',
+    name: 'Scrtny',
     components: {
       Navbar
     }

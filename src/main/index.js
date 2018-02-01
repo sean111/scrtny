@@ -17,9 +17,9 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
-let token
-let domain
-let refreshTime
+let token = null
+let domain = null
+let refreshTime = 60
 let refreshTimer = null
 
 const winURL = process.env.NODE_ENV === 'development'
@@ -69,8 +69,6 @@ ipcMain.on('get-repositories', (event, options) => {
   if (token === undefined || domain === undefined) {
     event.sender.send('get-repositories-response', {})
   }
-  console.log('>> Main')
-  console.log(options)
   let limit = 50
   let page = 1
   if (options !== undefined) {

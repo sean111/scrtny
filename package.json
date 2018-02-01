@@ -1,5 +1,5 @@
 {
-  "name": "dbot-client",
+  "name": "Scrtny",
   "version": "0.0.1",
   "author": "Sean Burke <sburke@8thwonder.io>",
   "description": "DeployBot Client",
@@ -22,8 +22,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "dbot-client",
-    "appId": "org.8thwonder.dbot-client",
+    "productName": "scrtny",
+    "appId": "org.8thwonder.scrtny",
     "directories": {
       "output": "build"
     },
