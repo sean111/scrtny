@@ -1,6 +1,6 @@
 <template>
     <section class="section">
-      Test
+      Please select a repository from the dropdown above to get started
     </section>
 </template>
 

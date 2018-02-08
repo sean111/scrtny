@@ -1,4 +1,4 @@
-# dbot-client
+# Scrtny
 
 > DeployBot Client
 
