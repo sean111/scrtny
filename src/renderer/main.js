@@ -22,7 +22,7 @@ Vue.use(VueProgressBar, {
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
 Vue.config.productionTip = false
-Vue.moment = moment
+Vue.moment = Vue.prototype.$moment = moment
 
 Vue.filter('formatDate', function (value) {
   if (!value) return null

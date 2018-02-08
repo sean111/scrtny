@@ -2,7 +2,6 @@
 
 import { app, BrowserWindow, ipcMain } from 'electron'
 import _ from 'underscore'
-// import moment from 'moment'
 let storage = require('electron-json-storage')
 let axios = require('axios')
 

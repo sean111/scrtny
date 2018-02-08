@@ -23,7 +23,8 @@
     props: ['id'],
     data () {
       return {
-        deployments: null
+        deployments: null,
+        lastUpdated: null
       }
     },
     watch: {
@@ -43,12 +44,18 @@
     },
     created () {
       this.$electron.ipcRenderer.on('progress-start', () => {
-        console.log('progress start')
         this.$Progress.start()
       })
       this.$electron.ipcRenderer.on('get-deployments-response', (event, data) => {
         this.deployments = data.entries
-        this.$Progress.finish()
+        let deployedAt = this.$moment(data.entries[0].deployed_at).valueOf()
+        console.log({'lastUpdated': this.lastUpdated, 'deployedAt': deployedAt})
+        if (deployedAt !== this.lastUpdated) {
+          if (deployedAt && this.lastUpdated !== null) {
+            void new Notification('New Deployment', {body: 'A new deployment was found'})
+          }
+          this.lastUpdated = deployedAt
+        }
       })
     },
     methods: {
@@ -65,10 +72,12 @@
       }
     },
     beforeRouteUpdate (to, from, next) {
+      this.lastUpdated = null
       this.$electron.ipcRenderer.send('clear-timeout')
       next()
     },
     beforeRouteLeave (to, from, next) {
+      this.lastUpdated = null
       this.$electron.ipcRenderer.send('clear-timeout')
       next()
     }
