@@ -1,5 +1,6 @@
 {
   "name": "Scrtny",
+  "homepage": "https://gitlab.com/sean111/scrtny",
   "version": "0.0.1",
   "author": "Sean Burke <sburke@8thwonder.io>",
   "description": "DeployBot Client",
@@ -52,7 +53,19 @@
       "icon": "build/icons/icon.ico"
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons",
+      "category": "Development",
+      "target": [
+        {
+          "target": "AppImage"
+        },
+        {
+          "target": "deb"
+        },
+        {
+          "target": "7z"
+        }
+      ]
     }
   },
   "dependencies": {
