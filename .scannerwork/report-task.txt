@@ -1,0 +1,7 @@
+organization=sean111-github
+projectKey=scrtny
+serverUrl=https://sonarcloud.io
+serverVersion=7.3.0.14089
+dashboardUrl=https://sonarcloud.io/dashboard?id=scrtny
+ceTaskId=AWSklHAqr5pnsk0fp9rr
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AWSklHAqr5pnsk0fp9rr

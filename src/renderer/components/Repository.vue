@@ -50,8 +50,10 @@
       cardClass: function (deployment) {
         if (deployment.state === 'success') {
           return 'success'
-        } else {
+        } else if (deployment.state === 'error' ) {
           return 'danger'
+        } else {
+          return 'primary';
         }
       }
     },
